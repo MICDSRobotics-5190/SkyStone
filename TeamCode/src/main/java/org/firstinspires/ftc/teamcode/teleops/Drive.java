@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.micdsrobotics.robotplus.hardware.MecanumDrive;
 import org.firstinspires.ftc.teamcode.components.SkyStoneRobot;
 
-@TeleOp(name = "Simple Drivetrain")
-public class SimpleDrivetrain extends OpMode {
+@TeleOp(name = "Drivetrain")
+public class Drive extends OpMode {
 
     private SkyStoneRobot robot = new SkyStoneRobot();
     private MecanumDrive drivetrain;
