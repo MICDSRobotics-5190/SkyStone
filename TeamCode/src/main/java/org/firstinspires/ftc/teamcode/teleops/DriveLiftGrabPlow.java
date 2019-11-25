@@ -36,6 +36,8 @@ public class DriveLiftGrabPlow extends OpMode {
             lift.raise();
         } else if (gamepad2.b) {
             lift.lower();
+        } else {
+            lift.stop();
         }
 
         if (gamepad2.x) {
