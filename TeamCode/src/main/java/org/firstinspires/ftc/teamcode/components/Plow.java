@@ -23,4 +23,8 @@ public class Plow {
         motor.setPower(-1);
     }
 
+    public void stop() {
+        motor.setPower(0);
+    }
+
 }

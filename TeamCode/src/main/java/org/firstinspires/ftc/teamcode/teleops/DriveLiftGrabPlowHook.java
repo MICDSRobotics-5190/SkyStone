@@ -53,6 +53,8 @@ public class DriveLiftGrabPlowHook extends OpMode {
             plow.raise();
         } else if (gamepad1.b) {
             plow.lower();
+        } else {
+            plow.stop();
         }
 
         if (gamepad1.x) {
