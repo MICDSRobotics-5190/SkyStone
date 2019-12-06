@@ -23,7 +23,7 @@ public class Grabber {
     // Brings the grabber to optimal grabbing position.
     public void clamp() {
         // TODO: Test position values
-        servo.setPosition(0.8);
+        servo.setPosition(0.75);
     }
 
 }

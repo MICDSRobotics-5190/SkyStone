@@ -23,7 +23,7 @@ public class DriveLift extends OpMode {
 
     @Override
     public void loop() {
-        drivetrain.complexDrive(gamepad1, telemetry);
+        drivetrain.complexDrive(gamepad1, telemetry, gamepad1.left_bumper ? 0.5 : 1);
 
         if (gamepad2.a) {
             lift.raise();

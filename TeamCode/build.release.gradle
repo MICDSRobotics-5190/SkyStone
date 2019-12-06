@@ -1,3 +1,7 @@
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 repositories {
     maven { url 'https://jitpack.io' }
 }
@@ -10,5 +14,5 @@ dependencies {
     implementation (name: 'WirelessP2p-release', ext:'aar')
     implementation (name: 'tfod-release', ext:'aar')
     implementation (name: 'tensorflow-lite-0.0.0-nightly', ext:'aar')
-    implementation 'com.github.MICDSRobotics-5190:robotplus-standalone:master-SNAPSHOT'
+    implementation('com.github.MICDSRobotics-5190:robotplus-standalone:master-SNAPSHOT') { changing = true }
 }
