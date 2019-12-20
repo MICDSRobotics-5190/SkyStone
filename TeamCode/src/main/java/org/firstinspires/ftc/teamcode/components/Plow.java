@@ -16,7 +16,7 @@ public class Plow {
     }
 
     public void raise() {
-        motor.setPower(1);
+        motor.setPower(0.5);
     }
 
     public void lower() {
