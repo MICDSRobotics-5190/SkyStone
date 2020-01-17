@@ -36,55 +36,73 @@ public class autoTest extends LinearOpMode {
         waitForStart();
 
         //drive forward
-        plow.lower();
-        sleep(125);
-        moveDistanceCm(MecanumDrive.Direction.UP,60);
+        lift.raise();
+        sleep(400);
+        lift.stop();
+        plow.raise();
+        sleep(400);
+        plow.stop();
+        moveDistanceCm(MecanumDrive.Direction.UP,68);
+        moveSlowDistance(MecanumDrive.Direction.UP, 15, 0.4);
+        sleep(100);
 
         //grab block
-        lift.raise();
-        sleep(500);
-        lift.stop();
-        moveDistanceCm(MecanumDrive.Direction.UP, 10);
+        grabber.extend();
+        sleep(1200);
         lift.lower();
-        sleep(500);
+        sleep(600);
+        lift.stop();
         grabber.clamp();
+        sleep(500);
 
         //drive under skybridge to foundation
-        moveDistanceCm(MecanumDrive.Direction.DOWN, 40);
-        drivetrain.complexDrive(0,0,1);
-        sleepDistance(132);
-        moveDistanceCm(MecanumDrive.Direction.UP, 183);
-        drivetrain.complexDrive(0,0,-1);
-        sleepDistance(132);
+        //moveDistanceCm(MecanumDrive.Direction.DOWN, 10);
+        //grabber.clamp();
+        //sleep(300);
+        moveDistanceCm(MecanumDrive.Direction.DOWN,50);
+        //drivetrain.complexDrive(0,0,1);
+        //sleepDistance(32.5);
+        moveDistanceCm(MecanumDrive.Direction.LEFT, 220);
+        //drivetrain.complexDrive(0,0,-1);
+        //sleepDistance(32.5);
 
         //place block on foundation
         lift.raise();
         sleep(200);
-        plow.raise();
-        sleep(200);
-        moveDistanceCm(MecanumDrive.Direction.UP, 40);
+        lift.stop();
+        plow.lower();
+        sleep(400);
+        plow.stop();
+        moveDistanceCm(MecanumDrive.Direction.UP, 45);
         lift.lower();
         sleep(200);
+        lift.stop();
         grabber.extend();
+        sleep(200);
         lift.raise();
         sleep(500);
+        lift.stop();
 
         //latch onto foundation
         moveDistanceCm(MecanumDrive.Direction.DOWN, 20);
-        moveDistanceCm(MecanumDrive.Direction.LEFT, 50);
+        moveDistanceCm(MecanumDrive.Direction.LEFT, 30);
         drivetrain.complexDrive(0,0,1);
-        sleepDistance(264);
+        sleepDistance(48);
         lift.lower();
         sleep(500);
-        moveDistanceCm(MecanumDrive.Direction.DOWN, 20);
+        lift.stop();
+        moveDistanceCm(MecanumDrive.Direction.DOWN, 25);
         foundationHook.lower();
+        sleep(1000);
+        grabber.close();
+        sleep(1000);
 
         //drop off foundation at ?depot?
-        moveDistanceCm(MecanumDrive.Direction.UP, 90);
+        moveSlowDistance(MecanumDrive.Direction.UP, 170, 0.5);
         foundationHook.raise();
 
         //drive to under the bridge
-        moveDistanceCm(MecanumDrive.Direction.LEFT, 175);
+        moveDistanceCm(MecanumDrive.Direction.LEFT, 160);
 
 
     }
@@ -100,6 +118,12 @@ public class autoTest extends LinearOpMode {
     private void moveDistanceCm(MecanumDrive.Direction direction, double distance) {
         if (distance <= 0) return;
         drivetrain.complexDrive(direction.angle(), 1, 0);
+        sleepDistance(distance);
+    }
+
+    private void moveSlowDistance(MecanumDrive.Direction direction, double distance, double velocity) {
+        if (distance <= 0) return;
+        drivetrain.complexDrive(direction.angle(), velocity, 0);
         sleepDistance(distance);
     }
 

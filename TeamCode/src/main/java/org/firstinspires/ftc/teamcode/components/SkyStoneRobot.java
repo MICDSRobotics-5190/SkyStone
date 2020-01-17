@@ -33,6 +33,6 @@ public class SkyStoneRobot extends Robot<MecanumDrive> {
     @Override
     public double voltageToDistance(double voltage) {
         // TODO
-        return 0;
+        return (5.6417 * voltage) - 33.162;
     }
 }
