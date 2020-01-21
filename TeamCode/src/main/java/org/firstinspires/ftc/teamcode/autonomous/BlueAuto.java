@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.components.Lift;
 import org.firstinspires.ftc.teamcode.components.Plow;
 import org.firstinspires.ftc.teamcode.components.SkyStoneRobot;
 
-@Autonomous(name = "autoTest")
-public class autoTest extends LinearOpMode {
+@Autonomous(name = "Blue")
+public class BlueAuto extends LinearOpMode {
 
     private SkyStoneRobot robot = new SkyStoneRobot();
     private MecanumDrive drivetrain;
@@ -48,7 +48,7 @@ public class autoTest extends LinearOpMode {
 
         //grab block
         grabber.extend();
-        sleep(1200);
+        sleep(2000);
         lift.lower();
         sleep(600);
         lift.stop();
@@ -73,7 +73,7 @@ public class autoTest extends LinearOpMode {
         plow.lower();
         sleep(400);
         plow.stop();
-        moveDistanceCm(MecanumDrive.Direction.UP, 45);
+        moveDistanceCm(MecanumDrive.Direction.UP, 62);
         lift.lower();
         sleep(200);
         lift.stop();
@@ -91,7 +91,7 @@ public class autoTest extends LinearOpMode {
         lift.lower();
         sleep(500);
         lift.stop();
-        moveDistanceCm(MecanumDrive.Direction.DOWN, 25);
+        moveDistanceCm(MecanumDrive.Direction.DOWN, 22);
         foundationHook.lower();
         sleep(1000);
         grabber.close();
