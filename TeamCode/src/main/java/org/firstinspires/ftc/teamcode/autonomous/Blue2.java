@@ -20,10 +20,8 @@ import org.firstinspires.ftc.teamcode.components.SkyStoneRobot;
 
 import java.util.List;
 
-import static java.lang.System.nanoTime;
-
-@Autonomous(name = "Red")
-public class RedAuto extends LinearOpMode {
+@Autonomous(name = "Blue2")
+public class Blue2 extends LinearOpMode {
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String STONE_LABEL = "Stone";
@@ -56,84 +54,13 @@ public class RedAuto extends LinearOpMode {
         plow = new Plow(hardwareMap);
         foundationHook = new FoundationHook(hardwareMap);
         long adjustDist = 0;
-        boolean isLeft = false;
+        boolean isRight = false;
 
         initTensorFlow();
 
         waitForStart();
 
-        switch (getSkyStonePosition()) {
-            case LEFT:
-                moveDistanceCm(MecanumDrive.Direction.LEFT, 18);
-                isLeft = true;
-                break;
-            case MIDDLE:
-                moveDistanceCm(MecanumDrive.Direction.RIGHT,20);
-                adjustDist = -300;
-                break;
-            case RIGHT:
-                moveDistanceCm(MecanumDrive.Direction.RIGHT, 39);
-                adjustDist = -600;
-                break;
-        }
-
-        //drive forward
-        lift.raise();
-        sleep(400);
-        lift.stop();
-        plow.raise();
-        sleep(300);
-        plow.stop();
-        moveDistanceCm(MecanumDrive.Direction.UP,68);
-        moveSlowDistance(MecanumDrive.Direction.UP, 15, 0.4);
-        sleep(100);
-
-        //grab block
-        grabber.extend();
-        sleep(2000);
-        lift.lower();
-        sleep(400);
-        lift.stop();
-        grabber.clamp();
-        sleep(600);
-
-        //drive under skybridge to foundation
-        moveDistanceCm(MecanumDrive.Direction.DOWN,36);
-        drivetrain.complexDrive(6.205,1,0);
-        sleep(4500+adjustDist);
-        lift.raise();
-        sleep(250);
-        lift.stop();
-        if (isLeft){
-            drivetrain.complexDrive(0,0,-1);
-            sleepDistance(11);
-        }
-        drivetrain.complexDrive(6.205,1,0);
-        sleep(650);
-
-        //place block on foundation
-        plow.lower();
-        /*sleep(800);
-        plow.stop();*/
-        moveDistanceCm(MecanumDrive.Direction.UP, 35);
-        lift.lower();
-        sleep(250);
-        lift.stop();
-        plow.stop();
-        grabber.extend();
-        sleep(200);
-        lift.raise();
-        sleep(500);
-        lift.stop();
-
-        //park under bridge
-        moveDistanceCm(MecanumDrive.Direction.DOWN, 30);
-        lift.lower();
-        sleep(400);
-        lift.stop();
-        grabber.close();
-        sleep(400);
-        moveDistanceCm(MecanumDrive.Direction.LEFT,130);
+        moveDistanceCm(MecanumDrive.Direction.RIGHT,100);
 
 
     }
@@ -178,7 +105,7 @@ public class RedAuto extends LinearOpMode {
     }
 
     private Position getSkyStonePosition() {
-        double startTime = nanoTime()/1000000000;
+        long startTime = System.currentTimeMillis();
         boolean running = true;
         while (running) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -202,9 +129,9 @@ public class RedAuto extends LinearOpMode {
                     }
                 }
             }
-            if (nanoTime()/1000000000-startTime>=3){
+            /*if (System.currentTimeMillis()-startTime>=3000){
                 running = false;
-            }
+            }*/
         }
         return Position.MIDDLE;
     }

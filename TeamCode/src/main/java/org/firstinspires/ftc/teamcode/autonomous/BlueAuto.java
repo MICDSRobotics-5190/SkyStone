@@ -20,6 +20,8 @@ import org.firstinspires.ftc.teamcode.components.SkyStoneRobot;
 
 import java.util.List;
 
+import static java.lang.System.nanoTime;
+
 @Autonomous(name = "Blue")
 public class BlueAuto extends LinearOpMode {
 
@@ -53,17 +55,26 @@ public class BlueAuto extends LinearOpMode {
         grabber.close();
         plow = new Plow(hardwareMap);
         foundationHook = new FoundationHook(hardwareMap);
+        long adjustDist = 0;
+        boolean isRight = false;
+
+        initTensorFlow();
 
         waitForStart();
 
         switch (getSkyStonePosition()) {
             case LEFT:
-                moveDistanceCm(MecanumDrive.Direction.LEFT, 15);
+                moveDistanceCm(MecanumDrive.Direction.LEFT, 18);
+                adjustDist = -600;
+                break;
+            case MIDDLE:
+                moveDistanceCm(MecanumDrive.Direction.RIGHT,20);
+                adjustDist = -300;
                 break;
             case RIGHT:
-                moveDistanceCm(MecanumDrive.Direction.RIGHT, 15);
+                moveDistanceCm(MecanumDrive.Direction.RIGHT, 39);
+                isRight = true;
                 break;
-            // default position is middle, no need to move
         }
 
         //drive forward
@@ -71,7 +82,7 @@ public class BlueAuto extends LinearOpMode {
         sleep(400);
         lift.stop();
         plow.raise();
-        sleep(400);
+        sleep(300);
         plow.stop();
         moveDistanceCm(MecanumDrive.Direction.UP,68);
         moveSlowDistance(MecanumDrive.Direction.UP, 15, 0.4);
@@ -81,59 +92,48 @@ public class BlueAuto extends LinearOpMode {
         grabber.extend();
         sleep(2000);
         lift.lower();
-        sleep(600);
+        sleep(400);
         lift.stop();
         grabber.clamp();
-        sleep(500);
+        sleep(600);
 
         //drive under skybridge to foundation
-        //moveDistanceCm(MecanumDrive.Direction.DOWN, 10);
-        //grabber.clamp();
-        //sleep(300);
-        moveDistanceCm(MecanumDrive.Direction.DOWN,50);
-        //drivetrain.complexDrive(0,0,1);
-        //sleepDistance(32.5);
-        moveDistanceCm(MecanumDrive.Direction.LEFT, 220);
-        //drivetrain.complexDrive(0,0,-1);
-        //sleepDistance(32.5);
+        moveDistanceCm(MecanumDrive.Direction.DOWN,36);
+        drivetrain.complexDrive(3.21,1,0);
+        sleep(4500+adjustDist);
+        lift.raise();
+        sleep(250);
+        lift.stop();
+        if (isRight){
+            drivetrain.complexDrive(0,0,1);
+            sleepDistance(11);
+        }
+        drivetrain.complexDrive(3.21,1,0);
+        sleep(650);
 
         //place block on foundation
-        lift.raise();
-        sleep(200);
-        lift.stop();
         plow.lower();
-        sleep(400);
-        plow.stop();
-        moveDistanceCm(MecanumDrive.Direction.UP, 62);
+        /*sleep(800);
+        plow.stop();*/
+        moveDistanceCm(MecanumDrive.Direction.UP, 35);
         lift.lower();
-        sleep(200);
+        sleep(250);
         lift.stop();
+        plow.stop();
         grabber.extend();
         sleep(200);
         lift.raise();
         sleep(500);
         lift.stop();
 
-        //latch onto foundation
-        moveDistanceCm(MecanumDrive.Direction.DOWN, 20);
-        moveDistanceCm(MecanumDrive.Direction.LEFT, 30);
-        drivetrain.complexDrive(0,0,1);
-        sleepDistance(48);
+        //park under bridge
+        moveDistanceCm(MecanumDrive.Direction.DOWN, 30);
         lift.lower();
-        sleep(500);
+        sleep(400);
         lift.stop();
-        moveDistanceCm(MecanumDrive.Direction.DOWN, 22);
-        foundationHook.lower();
-        sleep(1000);
         grabber.close();
-        sleep(1000);
-
-        //drop off foundation at ?depot?
-        moveSlowDistance(MecanumDrive.Direction.UP, 170, 0.5);
-        foundationHook.raise();
-
-        //drive to under the bridge
-        moveDistanceCm(MecanumDrive.Direction.LEFT, 160);
+        sleep(400);
+        moveDistanceCm(MecanumDrive.Direction.RIGHT,130);
 
 
     }
@@ -141,7 +141,8 @@ public class BlueAuto extends LinearOpMode {
     private void sleepDistance(double distance) {
         double voltage = hardwareMap.voltageSensor.get("Expansion Hub 2").getVoltage();
         long sleepTime = TimeOffsetVoltage.calculateDistance(robot, voltage, distance);
-        Log.d("OpMode", "sleep time: " + sleepTime);
+        telemetry.addData("OpMode", "sleep time: " + sleepTime);
+        telemetry.update();
         sleep(sleepTime);
         robot.stopMoving();
     }
@@ -177,21 +178,32 @@ public class BlueAuto extends LinearOpMode {
     }
 
     private Position getSkyStonePosition() {
-        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-        if (updatedRecognitions != null) {
-            for (Recognition recognition : updatedRecognitions) {
-                if (!recognition.getLabel().equals(SKYSTONE_LABEL)) continue;
+        double startTime = nanoTime()/1000000000;
+        boolean running = true;
+        while (running) {
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                for (Recognition recognition : updatedRecognitions) {
+                    if (!recognition.getLabel().equals(SKYSTONE_LABEL)) continue;
 
-                float recogCenter = (recognition.getLeft() + recognition.getRight()) / 2;
-                float positionRatio = recogCenter / recognition.getImageWidth();
+                    float recogCenter = (recognition.getLeft() + recognition.getRight()) / 2;
+                    float positionRatio = recogCenter / recognition.getImageWidth();
 
-                if (positionRatio >= 0.66) {
-                    return Position.RIGHT;
+                    if (positionRatio >= 0.66) {
+                        return Position.RIGHT;
+                    }
+
+                    else if (positionRatio <= 0.33) {
+                        return Position.LEFT;
+                    }
+
+                    else{
+                        running = false;
+                    }
                 }
-
-                if (positionRatio <= 0.33) {
-                    return Position.LEFT;
-                }
+            }
+            if (nanoTime()/1000000000-startTime>=3){
+                running = false;
             }
         }
         return Position.MIDDLE;

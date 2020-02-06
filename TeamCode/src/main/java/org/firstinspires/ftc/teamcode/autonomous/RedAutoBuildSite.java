@@ -20,10 +20,8 @@ import org.firstinspires.ftc.teamcode.components.SkyStoneRobot;
 
 import java.util.List;
 
-import static java.lang.System.nanoTime;
-
-@Autonomous(name = "Red")
-public class RedAuto extends LinearOpMode {
+@Autonomous(name = "RedBuildSite")
+public class RedAutoBuildSite extends LinearOpMode {
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String STONE_LABEL = "Stone";
@@ -112,10 +110,12 @@ public class RedAuto extends LinearOpMode {
         sleep(650);
 
         //place block on foundation
+        drivetrain.complexDrive(0,0,1);
+        sleepDistance(48);
         plow.lower();
         /*sleep(800);
         plow.stop();*/
-        moveDistanceCm(MecanumDrive.Direction.UP, 35);
+        moveDistanceCm(MecanumDrive.Direction.UP, 20);
         lift.lower();
         sleep(250);
         lift.stop();
@@ -127,13 +127,13 @@ public class RedAuto extends LinearOpMode {
         lift.stop();
 
         //park under bridge
-        moveDistanceCm(MecanumDrive.Direction.DOWN, 30);
+        moveDistanceCm(MecanumDrive.Direction.DOWN, 20);
         lift.lower();
         sleep(400);
         lift.stop();
         grabber.close();
         sleep(400);
-        moveDistanceCm(MecanumDrive.Direction.LEFT,130);
+        moveDistanceCm(MecanumDrive.Direction.RIGHT,130);
 
 
     }
@@ -178,7 +178,7 @@ public class RedAuto extends LinearOpMode {
     }
 
     private Position getSkyStonePosition() {
-        double startTime = nanoTime()/1000000000;
+        long startTime = System.currentTimeMillis();
         boolean running = true;
         while (running) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -202,9 +202,9 @@ public class RedAuto extends LinearOpMode {
                     }
                 }
             }
-            if (nanoTime()/1000000000-startTime>=3){
+            /*if (System.currentTimeMillis()-startTime>=3000){
                 running = false;
-            }
+            }*/
         }
         return Position.MIDDLE;
     }
